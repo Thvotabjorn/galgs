@@ -1,65 +1,66 @@
-from typing import Tuple, Any
+from typing import Any
+
+from utils import (find_diagonal_neighbours, find_neighbour_fields,
+                   if_mathematically_reachable)
 
 
-def if_mathematically_reachable(
-        initial_coordinate: int,
-        coordinate_to_reach: int,
-        number_of_steps: int) -> int:
-    '''Возвращает True - если в теории есть возможность
-    достичь из иходной точки до нужной, иначе False.'''
-    minimum_steps = (abs(initial_coordinate[0]-coordinate_to_reach[0]) +
-                     abs(initial_coordinate[1]-coordinate_to_reach[1]))
-    if minimum_steps > number_of_steps:
-        return False
-    return True
+def simple_operations(
+        field: list[list[int]],
+        size: int) -> list[list[Any]]:
+    for index_row in range(size):
+        for index_col in range(size):
+            neigbours = find_neighbour_fields(
+                index_row,
+                index_col,
+                size
+            )
+            diagonal_neighbours = find_diagonal_neighbours(
+                index_row,
+                index_col,
+                size
+            )
+            if (isinstance(field[index_row][index_col], int) and
+                    field[index_row][index_col] == 0):
+                pass
+
+    return field
 
 
-def find_neighbour_fields(
-        field_row: int,
-        field_column: int,
-        size: int) -> Tuple[Any]:
-    '''Возвращает координаты соседних полей по вертикали и горизонтали.'''
-    answer: list[Tuple[int]] = [(field_row-1, field_column),
-                                (field_row, field_column+1),
-                                (field_row+1, field_column),
-                                (field_row, field_column-1)]
-    for ind in range(4):
-        if (answer[ind][0] < 0 or answer[ind][1] < 0 or
-                answer[ind][0] > (size-1) or answer[ind][1] > (size-1)):
-            answer[ind] = None
-
-    return tuple(answer)
-
-
-def find_diagonal_neighbours(
-        field_row: int,
-        field_column: int,
-        size: int) -> Tuple[Any]:
-    '''Возвращает координаты соседних полей по диагонали.'''
-    answer: list[Tuple[int]] = [(field_row-1, field_column+1),
-                                (field_row+1, field_column+1),
-                                (field_row+1, field_column-1),
-                                (field_row-1, field_column-1)]
-    for ind in range(4):
-        if (answer[ind][0] < 0 or answer[ind][1] < 0 or
-                answer[ind][0] > (size-1) or answer[ind][1] > (size-1)):
-            answer[ind] = None
-    return tuple(answer)
-
-
-def simple_operations():
-    pass
-
-
-def advanced_methods():
-    pass
+def advanced_methods(
+        field: list[list[int]],
+        size: int) -> list[list[Any]]:
+    return field
 
 
 def solve_nurikabe(
         field: list[list[int]],
         size: int) -> list[list[Any]]:
     '''Основная функция решения'''
-    pass
+    iteration = 0
+    i_no_change = 0
+    while i_no_change > 3:
+        if iteration < 3:
+            simple_operations(field, size)
+
+
+def normal_print_answer(list_of_fields, size):
+    separator = '----' * size
+    print(separator)
+    for row in list_of_fields:
+        print('|', end='')
+        for ffield in row:
+            if ffield == 0:
+                print('   ', end='')
+            elif ffield == 'b':
+                print(' B ', end='')
+            elif ffield == 'w':
+                print(' W ', end='')
+            else:
+                print(f' {ffield} ', end='')
+            print('|', end='')
+        print()
+
+        print(separator)
 
 
 def main() -> None:
@@ -76,12 +77,8 @@ def main() -> None:
     ]
     size: int = len(field[0])
     print("initial task:")
-    answer_field: list[list[Any]] = solve_nurikabe(field, size)
-    for row in field:
-        print(row)
-    print()
-    for row in answer_field:
-        print(row)
+    normal_print_answer(field, size)
+    # answer_field: list[list[Any]] = solve_nurikabe(field, size)
 
 
 if __name__ == '__main__':
